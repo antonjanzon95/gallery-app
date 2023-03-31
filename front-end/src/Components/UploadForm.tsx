@@ -5,7 +5,19 @@ const UploadForm = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setUploaded(true);
+
+    const form = event.target as HTMLFormElement;
+    const formData = new FormData(form);
+    fetch("http://localhost:3000/image/savefile", {
+      method: "POST",
+      body: formData,
+    })
+      .then(() => {
+        setUploaded(true);
+      })
+      .catch((error) => {
+        console.log("error: ", error);
+      });
   };
 
   return (
@@ -16,12 +28,7 @@ const UploadForm = () => {
             <h1 className="text-4xl font-extrabold text-center">
               Upload an image
             </h1>
-            <form
-              onSubmit={handleSubmit}
-              action="http://localhost:3000/image/savefile"
-              method="post"
-              encType="multipart/form-data"
-            >
+            <form onSubmit={handleSubmit} encType="multipart/form-data">
               <input type="file" name="image" />
               <button
                 type="submit"
