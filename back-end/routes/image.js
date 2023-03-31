@@ -4,12 +4,13 @@ const multer = require("multer");
 const fs = require("fs");
 const mysql = require("mysql2");
 const path = require("path");
+require("dotenv").config();
 
 const connection = mysql.createConnection({
-  host: "localhost",
-  user: "images",
-  password: "password",
-  database: "images",
+  host: process.env.HOST,
+  user: process.env.USER,
+  password: process.env.PASSWORD,
+  database: process.env.DATABASE,
 });
 
 const storage = multer.diskStorage({
@@ -60,6 +61,12 @@ router.post("/savefile", upload.single("image"), (req, res) => {
       if (error) {
         console.log("error: ", error);
       }
+
+      fs.unlink(req.file.path, (error) => {
+        if (error) {
+          console.log("error: ", error);
+        }
+      });
 
       res.send("file uploaded successfully");
     });
