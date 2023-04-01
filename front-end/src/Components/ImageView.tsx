@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 interface Image {
   id: number;
@@ -20,6 +21,19 @@ const ImageView = () => {
     fetchImages();
   }, []);
 
+  const deleteImage = async (imageId: number) => {
+    const response = await fetch("http://localhost:3000/image/delete", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: imageId }),
+    });
+    const data = await response.json();
+    console.log(data);
+    setImages(images.filter((image) => image.id !== imageId));
+  };
+
   return (
     <>
       <div className="flex flex-col gap-8">
@@ -31,14 +45,19 @@ const ImageView = () => {
         ) : (
           <div className="w-[720px] flex flex-wrap justify-center gap-4">
             {images.map((image) => (
-              <img
-                className="max-w-[250px] max-h-[250px]"
-                key={image.id}
-                src={`data:${image.mime_type};base64,${image.data}`}
-                alt={image.name}
-                width={250}
-                height={250}
-              />
+              <div>
+                <img
+                  className="max-w-[250px] max-h-[250px]"
+                  key={uuidv4()}
+                  src={`data:${image.mime_type};base64,${image.data}`}
+                  alt={image.name}
+                  width={250}
+                  height={250}
+                />
+                <button key={uuidv4()} onClick={() => deleteImage(image.id)}>
+                  Delete
+                </button>
+              </div>
             ))}
           </div>
         )}

@@ -75,4 +75,22 @@ router.post("/savefile", upload.single("image"), (req, res) => {
   }
 });
 
+router.post("/delete", (req, res) => {
+  try {
+    const imageId = req.body.id;
+
+    const sql = `DELETE FROM imagestable WHERE id=${imageId}`;
+
+    connection.query(sql, (error, result) => {
+      if (error) {
+        console.log("error deleting image ", error);
+      }
+
+      res.json("image deleted successfully");
+    });
+  } catch (error) {
+    console.log("error deleting image ", error);
+  }
+});
+
 module.exports = router;
